@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Models\CmsModels.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
     <ProjectReference Include="..\Cms.DataAdapters\Cms.DataAdapters.csproj" />
   </ItemGroup>

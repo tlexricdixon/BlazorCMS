@@ -1,5 +1,30 @@
-﻿<h3>Post</h3>
+﻿// === CMS.Client/Pages/Posts.razor ===
+@page "/posts"
+@inject HttpClient Http
+@using CmsModels
+
+<h3>Posts</h3>
+
+@if (postList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var post in postList)
+        {
+            <li><b>@post.Title</b> by @post.Author (@post.CreatedAt.ToShortDateString())</li>
+        }
+    </ul>
+}
 
 @code {
+    private List<Post>? postList;
 
+    protected override async Task OnInitializedAsync()
+    {
+        postList = await Http.GetFromJsonAsync<List<Post>>("api/post");
+    }
 }
+
