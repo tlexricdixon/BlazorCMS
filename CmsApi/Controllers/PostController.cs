@@ -7,13 +7,13 @@ namespace CmsApi.Controllers
     [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private static List<Post> posts = new();
+        private static List<Posts> posts = new();
 
         [HttpGet]
-        public IEnumerable<Post> Get() => posts;
+        public IEnumerable<Posts> Get() => posts;
 
         [HttpPost]
-        public IActionResult Create(Post post)
+        public IActionResult Create(Posts post)
         {
             post.Id = posts.Count + 1;
             posts.Add(post);

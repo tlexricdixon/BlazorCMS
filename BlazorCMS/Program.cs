@@ -1,4 +1,6 @@
+using CmsModels;
 using Blazored.LocalStorage;
+using Interfaces;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Service;
@@ -15,7 +17,7 @@ namespace BlazorCMS
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddScoped<SyncService>();
+            builder.Services.AddScoped<ISyncService<Posts>, SyncService<Posts>>();
 
             await builder.Build().RunAsync();
         }

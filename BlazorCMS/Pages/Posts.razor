@@ -20,11 +20,11 @@ else
 }
 
 @code {
-    private List<Post>? postList;
+    private List<CmsModels.Posts>? postList;
 
     protected override async Task OnInitializedAsync()
     {
-        postList = await Http.GetFromJsonAsync<List<Post>>("api/post");
+            postList = await Http.GetFromJsonAsync<List<CmsModels.Posts>>("api/post");
     }
 }
 
