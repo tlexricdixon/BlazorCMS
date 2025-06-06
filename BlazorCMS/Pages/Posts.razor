@@ -1,9 +1,8 @@
-﻿// === CMS.Client/Pages/Posts.razor ===
-@page "/posts"
+﻿@page "/posts"
 @inject HttpClient Http
 @using CmsModels
 
-<h3>Posts</h3>
+<h3>Post</h3>
 
 @if (postList == null)
 {
@@ -20,11 +19,11 @@ else
 }
 
 @code {
-    private List<CmsModels.Posts>? postList;
+    private List<CmsModels.Post>? postList;
 
     protected override async Task OnInitializedAsync()
     {
-            postList = await Http.GetFromJsonAsync<List<CmsModels.Posts>>("api/post");
+            postList = await Http.GetFromJsonAsync<List<CmsModels.Post>>("api/post");
     }
 }
 

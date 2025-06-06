@@ -1,6 +1,7 @@
 ﻿namespace CmsModels;
 public abstract class SyncEntity
 {
+    [System.ComponentModel.DataAnnotations.Key]
     public int Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string? CreatedBy { get; set; }

@@ -17,7 +17,7 @@ namespace BlazorCMS
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddScoped<ISyncService<Posts>, SyncService<Posts>>();
+            builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
 
             await builder.Build().RunAsync();
         }
