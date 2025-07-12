@@ -13,17 +13,17 @@ else
     <ul>
         @foreach (var post in postList)
         {
-            <li><b>@post.Title</b> by @post.Author (@post.CreatedAt.ToShortDateString())</li>
+            <li><b>@post.Title</b> by @post.Author )</li>
         }
     </ul>
 }
 
 @code {
-    private List<CmsModels.Post>? postList;
+    private List<Post>? postList;
 
     protected override async Task OnInitializedAsync()
     {
-            postList = await Http.GetFromJsonAsync<List<CmsModels.Post>>("api/post");
+        postList = await Http.GetFromJsonAsync<List<CmsModels.Post>>("https://localhost:7027/api/post");
     }
 }
 

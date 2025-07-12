@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Json;
 
 namespace Service;
-public class SyncService<T> : ISyncService<T> where T :  SyncEntity
+public class SyncService<T> : ISyncService<T> where T : SyncEntity
 {
     private readonly ILocalStorageService _localStorage;
     private readonly HttpClient _http;

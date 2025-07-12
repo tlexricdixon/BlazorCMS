@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="System.Data.OleDb" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>

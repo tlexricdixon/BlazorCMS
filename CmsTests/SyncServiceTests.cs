@@ -3,13 +3,9 @@ using CmsModels;
 using DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Moq.Contrib.HttpClient;
 using Service;
 using System.Net;
-using Moq.Contrib.HttpClient;
-using Microsoft.EntityFrameworkCore.InMemory;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Xunit;
 
 namespace CmsTests;
 public class SyncServiceTests

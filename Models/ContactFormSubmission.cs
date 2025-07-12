@@ -1,6 +1,6 @@
 ﻿namespace CmsModels
 {
-    public class ContactFormSubmission
+    public class ContactFormSubmission : SyncEntity
     {
         public string Name { get; set; }
         public string Email { get; set; }

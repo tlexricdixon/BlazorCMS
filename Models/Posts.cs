@@ -1,7 +1,5 @@
-﻿using System.Xml.Linq;
-
-namespace CmsModels;
-public class Post: SyncEntity
+﻿namespace CmsModels;
+public class Post : SyncEntity
 {
     public string Title { get; set; }
     public string Slug { get; set; }
@@ -9,7 +7,7 @@ public class Post: SyncEntity
     public string Excerpt { get; set; }
     public DateTime PublishedAt { get; set; }
     public bool IsPublished { get; set; }
-    public string Author { get; set; } 
+    public string Author { get; set; }
 
     public int? CategoryId { get; set; }
     public Category Category { get; set; }
