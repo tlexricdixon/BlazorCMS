@@ -1,29 +1,39 @@
 using CmsApi.Controllers;
 using CmsModels;
+using DbContexts;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace CmsTests;
 
 public class PostControllerTests
 {
+    private PostController CreateControllerWithMockedContext()
+    {
+        var mockContext = new Mock<LocalDbContext>();
+        return new PostController(mockContext.Object);
+    }
+
     [Fact]
     public void Get_ReturnsEmptyCollection_WhenNoPostsExist()
     {
         // Arrange
-        var controller = new PostController();
+        var controller = CreateControllerWithMockedContext();
 
         // Act
         var result = controller.Get();
 
         // Assert
-        Assert.Empty(result);
+        var okResult = Assert.IsType<ActionResult<IEnumerable<Post>>>(result);
+        var posts = Assert.IsAssignableFrom<IEnumerable<Post>>(okResult.Value);
+        Assert.Empty(posts);
     }
 
     [Fact]
     public void Create_AssignsId_AndReturnsCreatedPost()
     {
         // Arrange
-        var controller = new PostController();
+        var controller = CreateControllerWithMockedContext();
         var post = new Post
         {
             Title = "Test Title",
@@ -47,7 +57,7 @@ public class PostControllerTests
     public void Get_ReturnsAllPosts_AfterCreation()
     {
         // Arrange
-        var controller = new PostController();
+        var controller = CreateControllerWithMockedContext();
         var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1" };
         var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2" };
 
@@ -57,8 +67,8 @@ public class PostControllerTests
         var result = controller.Get();
 
         // Assert
-        //post.create creates one in the controller, so we expect 2 + 1 = 3 posts
-        var posts = Assert.IsAssignableFrom<IEnumerable<Post>>(result);
+        var okResult = Assert.IsType<ActionResult<IEnumerable<Post>>>(result);
+        var posts = Assert.IsAssignableFrom<IEnumerable<Post>>(okResult.Value);
         Assert.Equal(2, posts.Count());
     }
 
@@ -66,7 +76,7 @@ public class PostControllerTests
     public void Create_AssignsSequentialIds_ToMultiplePosts()
     {
         // Arrange
-        var controller = new PostController();
+        var controller = CreateControllerWithMockedContext();
         var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1" };
         var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2" };
 

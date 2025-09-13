@@ -1,0 +1,51 @@
+﻿
+<div class="drop-zone"
+     @ondragover:preventDefault="true"
+     @ondrop="HandleDrop"
+     @ondrop:preventDefault="true">
+    <p>Drag and drop files here, or click Browse</p>
+    <label class="btn btn-sm btn-secondary">
+        Browse
+        <InputFile id="fileInput" OnChange="OnInputFileChange" multiple />
+    </label>
+</div>
+<ul>
+    @foreach (var file in uploadedFiles)
+    {
+        <li>@file.Name (@file.Size / 1024) KB</li>
+    }
+</ul>
+@if (uploadedFiles.Any())
+{
+    <div class="file-list">
+        @foreach (var file in uploadedFiles)
+        {
+            <div class="file-entry">
+                <span>@file.Name (@file.Size / 1024) KB</span>
+                <button @onclick="() => RemoveFile(file)">×</button>
+            </div>
+        }
+    </div>
+}
+
+<div class="action-buttons">
+    <button class="btn btn-primary btnDragDrop" @onclick="UploadFilesAsync" disabled="@(!uploadedFiles.Any())">
+        Upload
+    </button>
+    <button class="btn btn-outline-danger btnDragDrop" @onclick="ClearFiles" disabled="@(!uploadedFiles.Any())">
+        Clear
+    </button>
+</div>
+
+
+
+@if (uploadedFiles.Count > 0)
+{
+    <ul>
+        @foreach (var file in uploadedFiles)
+        {
+            <li>@file.Name (@file.Size / 1024) KB</li>
+        }
+    </ul>
+}
+

@@ -27,7 +27,7 @@ namespace Service
                 var dt = new DataTable();
                 dt.Load(reader);
 
-                await _yourDbService.SaveTableAsync(table, dt); // dynamically save
+               // await _yourDbService.SaveTableAsync(table, dt); // dynamically save
             }
         }
     }

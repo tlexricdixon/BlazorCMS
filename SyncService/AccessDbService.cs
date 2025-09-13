@@ -14,13 +14,13 @@ namespace Service
             // CREATE TABLE if not exists
             // INSERT rows one by one or bulk copy
 
-            // If you want to map to EF models, do conditional mappings:
-            if (tableName == "Products")
-                SaveToProductsModel(tableData);
-            else if (tableName == "Customers")
-                SaveToCustomersModel(tableData);
-            else
-                SaveToGenericJsonStore(tableData);
+            //// If you want to map to EF models, do conditional mappings:
+            //if (tableName == "Products")
+            //    SaveToProductsModel(tableData);
+            //else if (tableName == "Customers")
+            //    SaveToCustomersModel(tableData);
+            //else
+            //    SaveToGenericJsonStore(tableData);
         }
 
     }

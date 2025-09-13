@@ -101,3 +101,61 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+/*
+    Drag and Drop Styles for Component/DragDrop.razor
+*/
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    background-color: #f8f9fa;
+    color: #666;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.btnDragDrop {
+    margin-right: 0.5rem;
+}
+
+    .drop-zone input[type="file"] {
+        display: none;
+    }
+
+.browse-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.file-list {
+    margin-top: 15px;
+}
+
+.file-entry {
+    background-color: #fceaea; /* Access-style faded red */
+    color: #990000;
+    padding: 6px 12px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .file-entry button {
+        background: none;
+        border: none;
+        color: #990000;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
