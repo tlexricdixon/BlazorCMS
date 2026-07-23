@@ -15,12 +15,12 @@ public class LocalDbContext : DbContext
     public DbSet<Settings> Settings { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<UserProfile> Users { get; set; }
+    public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 
 
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-       // => options.UseSqlite("Data Source=localcms.db");
-        => options.UseNpgsql("Host=localhost;Database=localcms;Username=postgres;Password=1FuckoffJoe!");
+        => options.UseSqlite("Data Source=localcms.db");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PostConfiguration());
@@ -32,6 +32,7 @@ public class LocalDbContext : DbContext
         modelBuilder.ApplyConfiguration(new SyncEntityConfiguration<UserProfile>());
         modelBuilder.ApplyConfiguration(new SyncEntityConfiguration<Settings>());
         modelBuilder.ApplyConfiguration(new SyncEntityConfiguration<ContactFormSubmission>());
+        modelBuilder.ApplyConfiguration(new PageBlockConfiguration());
 
         // If you add more SyncEntity-derived models:
         // modelBuilder.ApplyConfiguration(new SyncEntityConfiguration<Comment>());

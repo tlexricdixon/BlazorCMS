@@ -1,7 +1,14 @@
+using CmsModels;
+using Interfaces;
+using Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(connectionString));
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -19,4 +26,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+await app.RunAsync();

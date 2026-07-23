@@ -38,7 +38,11 @@ public class PostControllerTests
         {
             Title = "Test Title",
             Content = "Test Content",
-            Author = "Test Author"
+            Author = "Test Author",
+            Slug = "test-title",
+            Excerpt = "Test Excerpt",
+            PublishedAt = DateTime.UtcNow,
+            IsPublished = true
         };
 
         // Act
@@ -58,8 +62,8 @@ public class PostControllerTests
     {
         // Arrange
         var controller = CreateControllerWithMockedContext();
-        var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1" };
-        var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2" };
+        var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1", Slug = "title-1", Excerpt = "Excerpt 1" };
+        var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2", Slug = "title-2", Excerpt = "Excerpt 2" };
 
         // Act
         controller.Create(post1);
@@ -77,8 +81,8 @@ public class PostControllerTests
     {
         // Arrange
         var controller = CreateControllerWithMockedContext();
-        var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1" };
-        var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2" };
+        var post1 = new Post { Title = "Title 1", Content = "Content 1", Author = "Author 1", Slug = "title-1", Excerpt = "Excerpt 1" };
+        var post2 = new Post { Title = "Title 2", Content = "Content 2", Author = "Author 2", Slug = "title-2", Excerpt = "Excerpt 2" };
 
         // Act
         var result1 = controller.Create(post1);

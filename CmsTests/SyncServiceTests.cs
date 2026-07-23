@@ -44,7 +44,15 @@ public class SyncServiceTests
     [Fact]
     public async Task EnqueueAsync_AddsItemToQueue()
     {
-        var post = new Post { Id = 1, Title = "Test" };
+        var post = new Post 
+        { 
+            Id = 1, 
+            Title = "Test",
+            Slug = "test-slug",
+            Content = "Test content",
+            Excerpt = "Test excerpt",
+            Author = "Test author"
+        };
         var service = new SyncService<Post>(_localStorageMock.Object, _httpClient, _dbContext);
         await service.EnqueueAsync(post);
 
