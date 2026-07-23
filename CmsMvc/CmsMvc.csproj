@@ -4,12 +4,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CmsCore\Interfaces.csproj" />
+    <ProjectReference Include="..\DbContext\DbContexts.csproj" />
     <ProjectReference Include="..\Models\CmsModels.csproj" />
     <ProjectReference Include="..\SyncService\Service.csproj" />
   </ItemGroup>

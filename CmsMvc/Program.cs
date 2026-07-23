@@ -1,14 +1,19 @@
 using CmsModels;
+using DbContexts;
 using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Service;
+using CmsMvc.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<LocalDbContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("CmsDatabase")
+        ?? "Data Source=localcms.db"));
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -25,5 +30,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LocalDbContext>();
+    await CmsSeed.InitializeAsync(db);
+}
 
 await app.RunAsync();
