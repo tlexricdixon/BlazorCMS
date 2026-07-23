@@ -8,13 +8,12 @@ public sealed class PageController(LocalDbContext db) : Controller
 {
     [HttpGet("pages/{slug}")]
     public async Task<IActionResult> Details(
-       string slug,
-       CancellationToken cancellationToken)
+        string slug,
+        CancellationToken cancellationToken)
     {
         var page = await db.Pages
             .AsNoTracking()
-            .Include(page => page.PageBlocks
-                .OrderBy(block => block.SortOrder))
+            .Include(page => page.PageBlocks.OrderBy(block => block.SortOrder))
             .SingleOrDefaultAsync(
                 page =>
                     page.Slug == slug &&

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace CmsModels;
 
-public class PageBlock :SyncEntity
+public class PageBlock : SyncEntity
 {
     public int PageId { get; set; }
 

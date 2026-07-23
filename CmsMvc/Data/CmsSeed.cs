@@ -10,7 +10,7 @@ public static class CmsSeed
         LocalDbContext db,
         CancellationToken cancellationToken = default)
     {
-        await db.Database.MigrateAsync(cancellationToken);
+        await db.Database.EnsureCreatedAsync(cancellationToken);
 
         if (await db.Pages.AnyAsync(cancellationToken))
         {
@@ -26,27 +26,26 @@ public static class CmsSeed
             PageBlocks =
             [
                 new PageBlock
-            {
-                SortOrder = 1,
-                BlockType = BlockType.Heading,
-                HeadingText = "Accessible by default",
-                HeadingLevel = 2
-            },
-            new PageBlock
-            {
-                SortOrder = 2,
-                BlockType = BlockType.Paragraph,
-                ParagraphText =
-                    "This content came from SQLite and was rendered through normal Razor encoding."
-            },
-            new PageBlock
-            {
-                SortOrder = 3,
-                BlockType = BlockType.Link,
-                LinkText = "Illinois State Police",
-                LinkUrl = "https://isp.illinois.gov",
-                OpenInNewWindow = true
-            }
+                {
+                    SortOrder = 1,
+                    BlockType = BlockType.Heading,
+                    HeadingText = "Accessible by default",
+                    HeadingLevel = 2
+                },
+                new PageBlock
+                {
+                    SortOrder = 2,
+                    BlockType = BlockType.Paragraph,
+                    ParagraphText = "This page was loaded from SQLite and rendered through normal Razor encoding."
+                },
+                new PageBlock
+                {
+                    SortOrder = 3,
+                    BlockType = BlockType.Link,
+                    LinkText = "Illinois State Police",
+                    LinkUrl = "https://isp.illinois.gov",
+                    OpenInNewWindow = true
+                }
             ]
         };
 
