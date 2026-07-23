@@ -6,7 +6,7 @@ namespace CmsModels;
 
 public class PageBlock :SyncEntity
 {
-    public Guid PageId { get; set; }
+    public int PageId { get; set; }
 
     public Page Page { get; set; } = null!;
 

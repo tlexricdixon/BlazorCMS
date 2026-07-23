@@ -17,10 +17,6 @@ public class LocalDbContext : DbContext
     public DbSet<UserProfile> Users { get; set; }
     public DbSet<PageBlock> PageBlocks => Set<PageBlock>();
 
-
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite("Data Source=localcms.db");
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PostConfiguration());

@@ -1,0 +1,9 @@
+﻿@model CmsModels.Page
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+<partial name="Blocks/_PageBlocks" model="Model" />
