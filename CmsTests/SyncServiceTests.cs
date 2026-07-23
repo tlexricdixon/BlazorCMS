@@ -25,7 +25,7 @@ public class SyncServiceTests
         var options = new DbContextOptionsBuilder<LocalDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDb")
             .Options;
-        _dbContext = new LocalDbContext();
+        _dbContext = new LocalDbContext(options);
     }
 
     [Fact]

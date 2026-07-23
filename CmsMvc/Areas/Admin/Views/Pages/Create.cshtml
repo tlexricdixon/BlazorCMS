@@ -1,0 +1,43 @@
+﻿@model CmsMvc.Areas.Admin.Models.PageCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Page";
+}
+
+<h1>Create Page</h1>
+
+<form asp-area="Admin" asp-controller="Pages" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger"></div>
+
+    <div class="mb-3">
+        <label for="Title" asp-for="Title" class="form-label"></label>
+        <input id="Title" asp-for="Title"
+               class="form-control"
+               autocomplete="off" />
+        <span asp-validation-for="Title"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="Slug" asp-for="Slug" class="form-label"></label>
+        <input id="Slug" asp-for="Slug"
+               class="form-control"
+               autocomplete="off"
+               aria-describedby="slug-help" />
+        <div id="slug-help" class="form-text">
+            Example: about-us
+        </div>
+        <span asp-validation-for="Slug"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Create Draft
+    </button>
+
+    <a asp-action="Index" class="btn btn-link">
+        Cancel
+    </a>
+</form>

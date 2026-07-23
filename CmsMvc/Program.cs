@@ -8,7 +8,7 @@ using CmsMvc.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
+//builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("CmsDatabase")
@@ -30,7 +30,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
