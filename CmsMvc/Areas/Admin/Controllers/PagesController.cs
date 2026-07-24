@@ -33,6 +33,11 @@ public sealed class PagesController(LocalDbContext db) : Controller
         PageCreateViewModel model,
         CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
         model.Slug = model.Slug.Trim().ToLowerInvariant();
 
         if (await db.Pages.AnyAsync(
@@ -42,10 +47,6 @@ public sealed class PagesController(LocalDbContext db) : Controller
             ModelState.AddModelError(
                 nameof(model.Slug),
                 "A page with this slug already exists.");
-        }
-
-        if (!ModelState.IsValid)
-        {
             return View(model);
         }
 
@@ -77,8 +78,231 @@ public sealed class PagesController(LocalDbContext db) : Controller
                 page => page.Id == id,
                 cancellationToken);
 
-        return page is null
-            ? NotFound()
-            : View(page);
+        if (page is null)
+        {
+            return NotFound();
+        }
+
+        var model = new PageEditViewModel
+        {
+            Id = page.Id,
+            Title = page.Title,
+            Slug = page.Slug,
+            IsPublished = page.IsPublished,
+            PublishedAt = page.PublishedAt,
+            LastModified = page.LastModified,
+            PageBlocks = page.PageBlocks
+                .OrderBy(block => block.SortOrder)
+                .ToList()
+        };
+
+        return View(model);
+    }
+    [HttpPost("edit/{id:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+    int id,
+    PageEditViewModel model,
+    CancellationToken cancellationToken)
+    {
+        if (id != model.Id)
+        {
+            return BadRequest();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            model.PageBlocks = await db.PageBlocks
+                .AsNoTracking()
+                .Where(block => block.PageId == id)
+                .OrderBy(block => block.SortOrder)
+                .ToListAsync(cancellationToken);
+
+            return View(model);
+        }
+
+        model.Title = model.Title.Trim();
+        model.Slug = model.Slug.Trim().ToLowerInvariant();
+
+        var slugExists = await db.Pages.AnyAsync(
+            page =>
+                page.Id != id &&
+                page.Slug == model.Slug,
+            cancellationToken);
+
+        if (slugExists)
+        {
+            ModelState.AddModelError(
+                nameof(model.Slug),
+                "A page with this slug already exists.");
+            
+            model.PageBlocks = await db.PageBlocks
+                .AsNoTracking()
+                .Where(block => block.PageId == id)
+                .OrderBy(block => block.SortOrder)
+                .ToListAsync(cancellationToken);
+
+            return View(model);
+        }
+
+        var page = await db.Pages
+            .SingleOrDefaultAsync(
+                page => page.Id == id,
+                cancellationToken);
+
+        if (page is null)
+        {
+            return NotFound();
+        }
+
+        page.Title = model.Title;
+        page.Slug = model.Slug;
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        TempData["SuccessMessage"] = "Page saved.";
+
+        return RedirectToAction(
+            nameof(Edit),
+            new { id = page.Id });
+    }
+    [HttpPost("edit/{id:int}/blocks/add")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddBlock(
+    int id,
+    AddBlockViewModel model,
+    CancellationToken cancellationToken)
+    {
+        var pageExists = await db.Pages.AnyAsync(
+            page => page.Id == id,
+            cancellationToken);
+
+        if (!pageExists)
+        {
+            return NotFound();
+        }
+
+        var nextSortOrder = await db.PageBlocks
+            .Where(block => block.PageId == id)
+            .Select(block => (int?)block.SortOrder)
+            .MaxAsync(cancellationToken) ?? 0;
+
+        var block = new PageBlock
+        {
+            PageId = id,
+            BlockType = model.BlockType,
+            SortOrder = nextSortOrder + 1
+        };
+
+        switch (model.BlockType)
+        {
+            case BlockType.Heading:
+                block.HeadingText = "New heading";
+                block.HeadingLevel = 2;
+                break;
+
+            case BlockType.Paragraph:
+                block.ParagraphText = "New paragraph";
+                break;
+
+            case BlockType.Link:
+                block.LinkText = "New link";
+                block.LinkUrl = "/";
+                break;
+
+            default:
+                return BadRequest();
+        }
+
+        db.PageBlocks.Add(block);
+        await db.SaveChangesAsync(cancellationToken);
+
+        return RedirectToAction(
+            nameof(EditBlock),
+            new
+            {
+                pageId = id,
+                blockId = block.Id
+            });
+    }
+    [HttpGet("edit/{pageId:int}/blocks/{blockId:int}")]
+    public async Task<IActionResult> EditBlock(
+    int pageId,
+    int blockId,
+    CancellationToken cancellationToken)
+    {
+        var block = await db.PageBlocks
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                block =>
+                    block.Id == blockId &&
+                    block.PageId == pageId,
+                cancellationToken);
+
+        if (block is null)
+        {
+            return NotFound();
+        }
+
+        return View(block);
+    }
+    [HttpPost("edit/{pageId:int}/blocks/{blockId:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditBlock(
+    int pageId,
+    int blockId,
+    PageBlock model,
+    CancellationToken cancellationToken)
+    {
+        if (blockId != model.Id || pageId != model.PageId)
+        {
+            return BadRequest();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var block = await db.PageBlocks
+            .SingleOrDefaultAsync(
+                block =>
+                    block.Id == blockId &&
+                    block.PageId == pageId,
+                cancellationToken);
+
+        if (block is null)
+        {
+            return NotFound();
+        }
+
+        switch (block.BlockType)
+        {
+            case BlockType.Heading:
+                block.HeadingText = model.HeadingText?.Trim();
+                block.HeadingLevel = model.HeadingLevel;
+                break;
+
+            case BlockType.Paragraph:
+                block.ParagraphText = model.ParagraphText?.Trim();
+                break;
+
+            case BlockType.Link:
+                block.LinkText = model.LinkText?.Trim();
+                block.LinkUrl = model.LinkUrl?.Trim();
+                block.OpenInNewWindow = model.OpenInNewWindow;
+                break;
+
+            default:
+                return BadRequest();
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        TempData["SuccessMessage"] = "Block saved.";
+
+        return RedirectToAction(
+            nameof(Edit),
+            new { id = pageId });
     }
 }

@@ -4,7 +4,7 @@ public class PageBlock : SyncEntity
 {
     public int PageId { get; set; }
 
-    public Page Page { get; set; } = null!;
+    public Page? Page { get; set; }
 
     public int SortOrder { get; set; }
 
