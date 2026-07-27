@@ -173,6 +173,11 @@ public sealed class PagesController(LocalDbContext db) : Controller
     AddBlockViewModel model,
     CancellationToken cancellationToken)
     {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
         var pageExists = await db.Pages.AnyAsync(
             page => page.Id == id,
             cancellationToken);
@@ -304,5 +309,171 @@ public sealed class PagesController(LocalDbContext db) : Controller
         return RedirectToAction(
             nameof(Edit),
             new { id = pageId });
+    }
+    [HttpPost("edit/{pageId:int}/blocks/{blockId:int}/delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteBlock(
+    int pageId,
+    int blockId,
+    CancellationToken cancellationToken)
+    {
+        var block = await db.PageBlocks
+            .SingleOrDefaultAsync(
+                block =>
+                    block.Id == blockId &&
+                    block.PageId == pageId,
+                cancellationToken);
+
+        if (block is null)
+        {
+            return NotFound();
+        }
+
+        db.PageBlocks.Remove(block);
+        await db.SaveChangesAsync(cancellationToken);
+
+        await NormalizeBlockOrder(pageId, cancellationToken);
+
+        TempData["SuccessMessage"] = "Block deleted.";
+
+        return RedirectToAction(
+            nameof(Edit),
+            new { id = pageId });
+    }
+    [HttpPost("edit/{id:int}/publish")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Publish(
+    int id,
+    CancellationToken cancellationToken)
+    {
+        var page = await db.Pages
+            .SingleOrDefaultAsync(
+                page => page.Id == id,
+                cancellationToken);
+
+        if (page is null)
+        {
+            return NotFound();
+        }
+
+        page.IsPublished = true;
+        page.PublishedAt ??= DateTime.UtcNow;
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        TempData["SuccessMessage"] = "Page published.";
+
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+    [HttpPost("edit/{id:int}/unpublish")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Unpublish(
+    int id,
+    CancellationToken cancellationToken)
+    {
+        var page = await db.Pages
+            .SingleOrDefaultAsync(
+                page => page.Id == id,
+                cancellationToken);
+
+        if (page is null)
+        {
+            return NotFound();
+        }
+
+        page.IsPublished = false;
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        TempData["SuccessMessage"] = "Page unpublished.";
+
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+    private async Task NormalizeBlockOrder(
+    int pageId,
+    CancellationToken cancellationToken)
+    {
+        var blocks = await db.PageBlocks
+            .Where(block => block.PageId == pageId)
+            .OrderBy(block => block.SortOrder)
+            .ThenBy(block => block.Id)
+            .ToListAsync(cancellationToken);
+
+        for (var index = 0; index < blocks.Count; index++)
+        {
+            blocks[index].SortOrder = index + 1;
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
+    }
+    [HttpPost("edit/{pageId:int}/blocks/{blockId:int}/move-up")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> MoveBlockUp(
+    int pageId,
+    int blockId,
+    CancellationToken cancellationToken)
+    {
+        var blocks = await db.PageBlocks
+            .Where(block => block.PageId == pageId)
+            .OrderBy(block => block.SortOrder)
+            .ThenBy(block => block.Id)
+            .ToListAsync(cancellationToken);
+
+        var currentIndex = blocks.FindIndex(block => block.Id == blockId);
+
+        if (currentIndex < 0)
+        {
+            return NotFound();
+        }
+
+        if (currentIndex == 0)
+        {
+            return RedirectToAction(nameof(Edit), new { id = pageId });
+        }
+
+        var current = blocks[currentIndex];
+        var previous = blocks[currentIndex - 1];
+
+        (current.SortOrder, previous.SortOrder) =
+            (previous.SortOrder, current.SortOrder);
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        return RedirectToAction(nameof(Edit), new { id = pageId });
+    }
+    [HttpPost("edit/{pageId:int}/blocks/{blockId:int}/move-down")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> MoveBlockDown(
+    int pageId,
+    int blockId,
+    CancellationToken cancellationToken)
+    {
+        var blocks = await db.PageBlocks
+            .Where(block => block.PageId == pageId)
+            .OrderBy(block => block.SortOrder)
+            .ThenBy(block => block.Id)
+            .ToListAsync(cancellationToken);
+
+        var currentIndex = blocks.FindIndex(block => block.Id == blockId);
+
+        if (currentIndex < 0)
+        {
+            return NotFound();
+        }
+
+        if (currentIndex == blocks.Count - 1)
+        {
+            return RedirectToAction(nameof(Edit), new { id = pageId });
+        }
+
+        var current = blocks[currentIndex];
+        var next = blocks[currentIndex + 1];
+
+        (current.SortOrder, next.SortOrder) =
+            (next.SortOrder, current.SortOrder);
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        return RedirectToAction(nameof(Edit), new { id = pageId });
     }
 }
