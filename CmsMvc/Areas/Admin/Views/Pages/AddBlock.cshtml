@@ -15,12 +15,14 @@
     {
         case CmsModels.BlockType.Heading:
             <div class="mb-3">
-                <label asp-for="HeadingText" class="form-label"></label>
+                <label asp-for="HeadingText"
+                       class="form-label"></label>
                 <input asp-for="HeadingText" class="form-control" />
             </div>
 
             <div class="mb-3">
-                <label asp-for="HeadingLevel" class="form-label"></label>
+                <label asp-for="HeadingLevel" 
+                        class="form-label"></label>
                 <select asp-for="HeadingLevel" class="form-select">
                     <option value="2">Heading 2</option>
                     <option value="3">Heading 3</option>
@@ -31,7 +33,8 @@
 
         case CmsModels.BlockType.Paragraph:
             <div class="mb-3">
-                <label asp-for="ParagraphText" class="form-label"></label>
+                <label asp-for="ParagraphText"
+                       class="form-label"></label>
                 <textarea asp-for="ParagraphText"
                           class="form-control"
                           rows="6"></textarea>
@@ -40,12 +43,14 @@
 
         case CmsModels.BlockType.Link:
             <div class="mb-3">
-                <label asp-for="LinkText" class="form-label"></label>
+                <label asp-for="LinkText" 
+                        class="form-label"></label>
                 <input asp-for="LinkText" class="form-control" />
             </div>
 
             <div class="mb-3">
-                <label asp-for="LinkUrl" class="form-label"></label>
+                <label asp-for="LinkUrl" 
+                        class="form-label"></label>
                 <input asp-for="LinkUrl" class="form-control" />
             </div>
 

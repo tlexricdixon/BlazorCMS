@@ -8,11 +8,36 @@ using CmsMvc.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-//builder.Services.AddScoped<ISyncService<Post>, SyncService<Post>>();
+var databaseProvider =
+    builder.Configuration["DatabaseProvider"] ?? "Sqlite";
+
+var connectionString =
+    builder.Configuration.GetConnectionString("CmsDatabase")
+    ?? throw new InvalidOperationException(
+        "The CmsDatabase connection string is missing.");
+
 builder.Services.AddDbContext<LocalDbContext>(options =>
-    options.UseSqlite(
-        builder.Configuration.GetConnectionString("CmsDatabase")
-        ?? "Data Source=localcms.db"));
+{
+    if (databaseProvider.Equals(
+            "SqlServer",
+            StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlServer(
+            connectionString,
+            sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
+    }
+    else
+    {
+        options.UseSqlite(connectionString);
+    }
+});
+//builder.Services.AddDbContext<LocalDbContext>(options =>
+//    options.UseSqlite(
+//        builder.Configuration.GetConnectionString("CmsDatabase")
+//        ?? "Data Source=localcms.db"));
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

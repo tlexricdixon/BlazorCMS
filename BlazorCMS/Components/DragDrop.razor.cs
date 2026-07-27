@@ -82,10 +82,10 @@ namespace BlazorCMS.Components
 
         public class UploadedFile
         {
-            public string Name { get; set; }
+            public required string Name { get; set; }
             public long Size { get; set; }
-            public string LocalPath { get; set; }
-            public IBrowserFile BrowserFile { get; set; }
+            public required string LocalPath { get; set; }
+            public required IBrowserFile BrowserFile { get; set; }
         }
     }
 }

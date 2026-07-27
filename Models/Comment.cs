@@ -3,7 +3,7 @@
     public class Comment : SyncEntity
     {
         public int PostId { get; set; }
-        public Post Post { get; set; }
+        public required Post Post { get; set; }
 
         public required string AuthorName { get; set; }
         public required string AuthorEmail { get; set; }
